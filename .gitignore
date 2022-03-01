@@ -1,6 +1,4 @@
 bin/
 bin-int/
 .vs
-L2_hw/*.vcxproj
-L2_hw/*.vcxproj.*
 L2_hw/*.ppm
