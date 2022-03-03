@@ -15,7 +15,7 @@ void WriteColor(fstream& file, Color pixel_color) {
 
 }
 
-inline double random_double(double min, double max) {
+double RandomDouble(double min, double max) {
 	static uniform_real_distribution<double> distribution(min, max);
 	static mt19937 generator;
 	return distribution(generator);
@@ -38,7 +38,7 @@ void GenerateFirstImage(int width, int height) {
 			auto y = (double(i - height / 2) / (height));
 
 			if (pow(x, 2) + pow(y, 2) < pow(r, 2)) {
-				c = Color(0.25, 0.25, random_double(0.5, 1.0));
+				c = Color(0.25, 0.25, RandomDouble(0.5, 1.0));
 			}
 			else {
 				c = Color(0.25, 0.75, 0.25);
@@ -65,61 +65,61 @@ void GenerateSecondImage(int width, int height) {
 			Color c;
 			if (i >= 576 && i <= 768) {
 				if (j >= 0 && j <= 255) {
-					c = random_double(0.0, 1.0) >= 0.5 ? Color(random_double(0.0, 1.0), 0.0, 0.0) : Color(0.0, 0.0, 0.0);
+					c = RandomDouble(0.0, 1.0) >= 0.5 ? Color(RandomDouble(0.0, 1.0), 0.0, 0.0) : Color(0.0, 0.0, 0.0);
 				}
 				if (j >= 256 && j <= 512) {
-					c = random_double(0.0, 1.0) >= 0.5 ? Color(0.0, random_double(0.0, 1.0), 0.0) : Color(0.0, 0.0, 0.0);
+					c = RandomDouble(0.0, 1.0) >= 0.5 ? Color(0.0, RandomDouble(0.0, 1.0), 0.0) : Color(0.0, 0.0, 0.0);
 				}
 				if (j >= 512 && j <= 768) {
-					c = random_double(0.0, 1.0) >= 0.5 ? Color(0.0, 0.0, random_double(0.0, 1.0)) : Color(0.0, 0.0, 0.0);
+					c = RandomDouble(0.0, 1.0) >= 0.5 ? Color(0.0, 0.0, RandomDouble(0.0, 1.0)) : Color(0.0, 0.0, 0.0);
 				}
 				if (j >= 768 && j <= 1024) {
-					c = random_double(0.0, 1.0) >= 0.5 ? Color(random_double(0.0, 1.0), random_double(0.0, 1.0), random_double(0.0, 1.0)) : Color(0.0, 0.0, 0.0);
+					c = RandomDouble(0.0, 1.0) >= 0.5 ? Color(RandomDouble(0.0, 1.0), RandomDouble(0.0, 1.0), RandomDouble(0.0, 1.0)) : Color(0.0, 0.0, 0.0);
 				}
 			}
 
 			if (i >= 384 && i <= 576) {
 				if (j >= 0 && j <= 255) {
-					c = random_double(0.0, 1.0) >= 0.5 ? Color(0.0, random_double(0.0, 1.0), 0.0) : Color(0.0, 0.0, 0.0);
+					c = RandomDouble(0.0, 1.0) >= 0.5 ? Color(0.0, RandomDouble(0.0, 1.0), 0.0) : Color(0.0, 0.0, 0.0);
 				}
 				if (j >= 256 && j <= 512) {
-					c = random_double(0.0, 1.0) >= 0.5 ? Color(random_double(0.0, 1.0), 0.0, 0.0) : Color(0.0, 0.0, 0.0);
+					c = RandomDouble(0.0, 1.0) >= 0.5 ? Color(RandomDouble(0.0, 1.0), 0.0, 0.0) : Color(0.0, 0.0, 0.0);
 				}
 				if (j >= 512 && j <= 768) {
-					c = random_double(0.0, 1.0) >= 0.5 ? Color(random_double(0.0, 1.0), random_double(0.0, 1.0), 1.0) : Color(0.0, 0.0, 0.0);
+					c = RandomDouble(0.0, 1.0) >= 0.5 ? Color(RandomDouble(0.0, 1.0), RandomDouble(0.0, 1.0), 1.0) : Color(0.0, 0.0, 0.0);
 				}
 				if (j >= 768 && j <= 1024) {
-					c = random_double(0.0, 1.0) >= 0.5 ? Color(1.0, random_double(0.0, 1.0), 0.0) : Color(0.0, 0.0, 0.0);
+					c = RandomDouble(0.0, 1.0) >= 0.5 ? Color(1.0, RandomDouble(0.0, 1.0), 0.0) : Color(0.0, 0.0, 0.0);
 				}
 			}
 
 			if (i >= 192 && i <= 384) {
 				if (j >= 0 && j <= 255) {
-					c = random_double(0.0, 1.0) >= 0.5 ? Color(1.0, random_double(0.0, 1.0), 0.0) : Color(0.0, 0.0, 0.0);
+					c = RandomDouble(0.0, 1.0) >= 0.5 ? Color(1.0, RandomDouble(0.0, 1.0), 0.0) : Color(0.0, 0.0, 0.0);
 				}
 				if (j >= 256 && j <= 512) {
-					c = random_double(0.0, 1.0) >= 0.5 ? Color(random_double(0.0, 1.0), 0.7, 0.25) : Color(0.0, 0.0, 0.0);
+					c = RandomDouble(0.0, 1.0) >= 0.5 ? Color(RandomDouble(0.0, 1.0), 0.7, 0.25) : Color(0.0, 0.0, 0.0);
 				}
 				if (j >= 512 && j <= 768) {
-					c = random_double(0.0, 1.0) >= 0.5 ? Color(random_double(0.0, 1.0), 1.0, random_double(0.0, 1.0)) : Color(0.0, 0.0, 0.0);
+					c = RandomDouble(0.0, 1.0) >= 0.5 ? Color(RandomDouble(0.0, 1.0), 1.0, RandomDouble(0.0, 1.0)) : Color(0.0, 0.0, 0.0);
 				}
 				if (j >= 768 && j <= 1024) {
-					c = random_double(0.0, 1.0) >= 0.5 ? Color(random_double(0.0, 1.0), random_double(0.0, 1.0), random_double(0.0, 1.0)) : Color(0.0, 0.0, 0.0);
+					c = RandomDouble(0.0, 1.0) >= 0.5 ? Color(RandomDouble(0.0, 1.0), RandomDouble(0.0, 1.0), RandomDouble(0.0, 1.0)) : Color(0.0, 0.0, 0.0);
 				}
 			}
 
 			if (i >= 0 && i <= 192) {
 				if (j >= 0 && j <= 255) {
-					c = random_double(0.0, 1.0) >= 0.5 ? Color(1.0, 0.0, 1.0) : Color(0.0, 0.0, 0.0);
+					c = RandomDouble(0.0, 1.0) >= 0.5 ? Color(1.0, 0.0, 1.0) : Color(0.0, 0.0, 0.0);
 				}
 				if (j >= 256 && j <= 512) {
-					c = random_double(0.0, 1.0) >= 0.5 ? Color(random_double(0.0, 1.0), random_double(0.0, 1.0), 0.0) : Color(0.0, 0.0, 0.0);
+					c = RandomDouble(0.0, 1.0) >= 0.5 ? Color(RandomDouble(0.0, 1.0), RandomDouble(0.0, 1.0), 0.0) : Color(0.0, 0.0, 0.0);
 				}
 				if (j >= 512 && j <= 768) {
-					c = random_double(0.0, 1.0) >= 0.5 ? Color(0.0, random_double(0.0, 1.0), 1.0) : Color(0.0, 0.0, 0.0);
+					c = RandomDouble(0.0, 1.0) >= 0.5 ? Color(0.0, RandomDouble(0.0, 1.0), 1.0) : Color(0.0, 0.0, 0.0);
 				}
 				if (j >= 768 && j <= 1024) {
-					c = random_double(0.0, 1.0) >= 0.5 ? Color(1.0, 0.0, random_double(0.0, 1.0)) : Color(0.0, 0.0, 0.0);
+					c = RandomDouble(0.0, 1.0) >= 0.5 ? Color(1.0, 0.0, RandomDouble(0.0, 1.0)) : Color(0.0, 0.0, 0.0);
 				}
 			}
 
