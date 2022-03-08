@@ -16,7 +16,7 @@ public:
     double& operator[](int i) { return e[i]; }
  
 
-public:
+private:
     double e[3];
 };
 
