@@ -4,8 +4,10 @@
 #include <cmath>     
 #include <stdlib.h> 
 #include <random>
+#include <chrono>
 
 using namespace std;
+using namespace std::chrono;
 
 void WriteColor(fstream& file, Color pixel_color) {
 
@@ -131,9 +133,18 @@ void GenerateSecondImage(int width, int height) {
 }
 
 int main() {
+	cout << "Working..." << endl;
+	auto start = high_resolution_clock::now();
 
 	GenerateFirstImage(1024, 1024);
 	GenerateSecondImage(1024, 768);
+
+
+	auto stop = high_resolution_clock::now();
+	auto duration = duration_cast<microseconds>(stop - start);
+
+	cout << "Done. It took " << duration.count() * 1/1000 << " milliseconds" << endl;
+	system("Pause");
 
 	return 0;
 }
