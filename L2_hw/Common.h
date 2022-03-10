@@ -38,5 +38,5 @@ inline Color CalculateColor(Ray& r) {
 	Vector3 unitDirection = r.GetDirection().Normalize();
 
 	auto t = 0.5 * (unitDirection.y() + 1.0);
-	return Color(0.2, 1.0, 0.5) * t;
+	return Color(0.2, 1.0, 0.5) * t + (1-t) * Color(0, 0.25, 0.75); //interpolate between the two colors
 }
