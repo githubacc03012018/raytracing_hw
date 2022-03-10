@@ -24,8 +24,8 @@ void GenerateImage() {
 			float Px = (2 * ((j + 0.5) / width) - 1) * halfAlfa * aspectRatio;
 			float Py = (1 - 2 * ((i + 0.5) / height) * halfAlfa);
 
-			Ray r = Ray(origin, Point3(Px, Py, -1) - origin);
-			WriteColor(myfile, CalculateColor(r));
+			Ray ray = Ray(origin, Point3(Px, Py, -1) - origin);
+			WriteColor(myfile, CalculateColor(ray));
 		}
 	}
 
