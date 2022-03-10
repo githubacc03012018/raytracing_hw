@@ -1,4 +1,4 @@
 bin/
 bin-int/
 .vs
-L2_hw/*.ppm
+L*_hw/*.ppm
