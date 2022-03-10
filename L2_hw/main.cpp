@@ -1,21 +1,13 @@
 #include <iostream>
 #include <fstream>
-#include "vector3.h"
 #include <cmath>     
 #include <stdlib.h> 
 #include <random>
 #include <chrono>
+#include "../L2_hw/Common.h"
 
 using namespace std;
 using namespace std::chrono;
-
-void WriteColor(fstream& file, Color pixel_color) {
-
-	file << static_cast<int>(255.999 * pixel_color.x()) << ' '
-		<< static_cast<int>(255.999 * pixel_color.y()) << ' '
-		<< static_cast<int>(255.999 * pixel_color.z()) << '\n';
-
-}
 
 double RandomDouble(double min, double max) {
 	static uniform_real_distribution<double> distribution(min, max);
