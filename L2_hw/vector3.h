@@ -1,5 +1,7 @@
 #pragma once
 #include <cmath>
+#include <ostream>
+#include <iostream>
 
 class Vector3 {
 public:
@@ -11,13 +13,18 @@ public:
 	double z() const { return e[2]; }
 
 	Vector3& Normalize() {
-		auto len = sqrt(e[0] * e[0] + e[1] * e[1] + e[2] * e[2]);
+		auto len = Length();
 		e[0] /= len;
 		e[1] /= len;
 		e[2] /= len;
 
 		return *this;
 	}
+
+	double Length() {
+		return sqrt(e[0] * e[0] + e[1] * e[1] + e[2] * e[2]);
+	}
+	
 	double operator[](int i) const { return e[i]; }
 	double& operator[](int i) { return e[i]; }
 	Vector3& operator*=(const double t) {
@@ -51,6 +58,15 @@ public:
 using Point3 = Vector3;   // 3D point
 using Color = Vector3;    // RGB color
 
+inline std::ostream& operator<<(std::ostream& out, const Vector3& v) {
+	return out << "(" << v.e[0] << ' ' << v.e[1] << ' ' << v.e[2] << ")";
+}
+
+inline Vector3 cross(const Vector3& u, const Vector3& v) {
+	return Vector3(u.e[1] * v.e[2] - u.e[2] * v.e[1],
+		u.e[2] * v.e[0] - u.e[0] * v.e[2],
+		u.e[0] * v.e[1] - u.e[1] * v.e[0]);
+}
 
 inline Vector3 operator*(double t, const Vector3& v) {
 	return Vector3(t * v.e[0], t * v.e[1], t * v.e[2]);
