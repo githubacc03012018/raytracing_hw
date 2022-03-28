@@ -68,6 +68,10 @@ inline Vector3 cross(const Vector3& u, const Vector3& v) {
 		u.e[0] * v.e[1] - u.e[1] * v.e[0]);
 }
 
+inline double Dot(const Vector3& u, const Vector3& v) {
+	return u.e[0] * v.e[0] + u.e[1] * v.e[1] + u.e[2] * v.e[2];
+}
+
 inline Vector3 operator*(double t, const Vector3& v) {
 	return Vector3(t * v.e[0], t * v.e[1], t * v.e[2]);
 }
