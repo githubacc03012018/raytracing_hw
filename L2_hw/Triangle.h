@@ -1,5 +1,4 @@
 #pragma once
-#include "../L2_hw/Vector3.h"
 #include "Common.h"
 
 class Triangle
@@ -39,15 +38,17 @@ public:
 		Vector3 v0v1 = v1() - v0();
 		Vector3 v0v2 = v2() - v0();
 
+
+		//Is Ray parallel to the plane?
 		auto normal = cross(v0v1, v0v2).Normalize();
-		auto s = Dot(normal, r.GetDirection());
-		if (abs(s) < kEpsilon) {
+		auto normalDotRayDir = Dot(normal, r.GetDirection());
+		if (abs(normalDotRayDir) < kEpsilon) {
 			return false;
 		}
 
-		auto d = -Dot(normal, v0());
-		auto t = -(Dot(normal, Vector3(0, 0, 0)) + d) / s;
-
+		auto distancePlaneToOrigin = -Dot(normal, v0());
+		auto t = -(Dot(normal, Vector3(0, 0, 0)) + distancePlaneToOrigin) / normalDotRayDir;
+		
 		if (t < 0) {
 			return false;
 		}
