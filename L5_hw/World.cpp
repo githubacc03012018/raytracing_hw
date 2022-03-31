@@ -1,4 +1,6 @@
 #include "World.h"
+#include "../L2_hw/Triangle.h"
+#include "../L2_hw/Common.h"
 
 void World::Add(Triangle t) {
 	world.push_back(t);

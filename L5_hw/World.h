@@ -1,6 +1,7 @@
 #pragma once
-#include "../L2_hw/Triangle.h"
 #include <vector>
+#include "../L2_hw/Triangle.h"
+
 class World {
 private:
 	//std::vector<std::shared_ptr<Triangle>> world;
