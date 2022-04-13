@@ -28,14 +28,17 @@ namespace CRT {
 		return cross(edge0, edge1).Length() / 2;
 	}
 
-	bool CRT::Triangle::HasRayIntersection(CRT::Ray& r, double closestT, Point3 cameraPos) {
+	bool CRT::Triangle::HasRayIntersection(CRT::Ray& r, double tMin, double closestT, Point3 cameraPos) {
 		constexpr float kEpsilon = 1e-8;
 		Vector3 v0v1 = v1() - v0();
 		Vector3 v0v2 = v2() - v0();
 
 		auto normal = cross(v0v1, v0v2).Normalize();
-		m_Normal = normal;
-		auto s = Dot(normal, r.GetDirection());
+		bool isFrontFace = Dot(r.GetDirection(), normal) < 0;
+		m_Normal = isFrontFace ? normal : normal * -1;
+
+	 
+		auto s = Dot(normal, r.GetDirection()); //no normalize
 		if (abs(s) < kEpsilon) {
 			return false;
 		}
@@ -47,10 +50,12 @@ namespace CRT {
 			return false;
 		}
 
+		if (t > closestT || t < tMin) return false;
+
 		//P(t) = origin + t * rayDirection	
 		auto P = r.GetAt(t);
 		m_IntersectionPoint = P;
-		if (t > closestT) return false;
+		
 
 		//Save the point itself
 		this->t = t;

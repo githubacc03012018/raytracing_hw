@@ -7,10 +7,10 @@
 namespace CRT {
 	class RayTracer {
 	public:
-		RayTracer(CRT::Scene& scene);
+		RayTracer(std::shared_ptr<CRT::Scene> scene) : m_Scene(scene) {}
 		void Render();
 		CRT::Color CalculateColor(CRT::Ray& ray);
 	private:
-		CRT::Scene m_Scene;
+		std::shared_ptr<CRT::Scene> m_Scene;
 	};
 }

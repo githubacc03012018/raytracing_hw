@@ -10,16 +10,16 @@
 namespace CRT {
 	class Scene {
 	public:
-		void LoadScene(const std::string& sceneName);
-		void LoadObjects(const rapidjson::Value::ConstArray& arr, const rapidjson::Value::ConstArray& indeces);
-		void SetSceneSettings(CRT::SceneSettings& settings);
-		CRT::SceneSettings GetSceneSettings();
+		Scene(std::shared_ptr<CRT::Camera> camera, std::shared_ptr<CRT::SceneSettings> settings, std::vector<CRT::Triangle> objects) : m_Camera(camera), m_SceneSettings(settings), m_Objects(objects) {}
+		Scene() {}
+		std::shared_ptr<CRT::Scene> LoadScene(const std::string& sceneName);
+		std::vector<CRT::Triangle> LoadObjects(const rapidjson::Value::ConstArray& arr, const rapidjson::Value::ConstArray& indeces);
 		std::vector<CRT::Triangle> GetTriangles();
-		CRT::Camera GetCamera();
-		void SetCamera(CRT::Camera& cam);
+		std::shared_ptr<CRT::SceneSettings> GetSceneSettings();
+		std::shared_ptr<CRT::Camera> GetCamera();
 	private:
-		CRT::SceneSettings m_SceneSettings = {};
-		CRT::Camera m_Camera = {};
+		std::shared_ptr<CRT::SceneSettings> m_SceneSettings;
+		std::shared_ptr<CRT::Camera> m_Camera;
 		std::vector<CRT::Triangle> m_Objects;
 	};
 }

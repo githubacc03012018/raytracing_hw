@@ -16,7 +16,7 @@ namespace CRT {
 		Vector3 GetNormal();
 		Color GetColor();
 		double Area();
-		bool HasRayIntersection(CRT::Ray& r, double closestT, CRT::Point3 cameraPos);
+		bool HasRayIntersection(CRT::Ray& r, double tMin, double closestT, CRT::Point3 cameraPos);
 	private:
 		CRT::Point3 m_Vertices[3];
 		CRT::Color m_Color;
