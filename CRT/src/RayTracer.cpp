@@ -8,7 +8,6 @@ inline double Clamp(double x, double min, double max) {
 	return x;
 }
 
-
 inline void WriteColor(std::fstream& file, CRT::Color pixelColor) {
 	file << static_cast<int>(255.999 * Clamp(pixelColor.x(), 0.0, 0.999)) << ' '
 		<< static_cast<int>(255.999 * Clamp(pixelColor.y(), 0.0, 0.999)) << ' '
@@ -39,7 +38,7 @@ CRT::Color CRT::RayTracer::CalculateColor(CRT::Ray& ray) {
 
 	if (HasRayIntersection(ray, hitObject)) {
 		for (const auto& light : lights) {
-
+			// Calculate the direction of the light
 			auto lightDirection = m_Scene.get()->GetCamera()->GetRotationMatrix() * light.GetPosition() - hitObject.GetPointOfIntersection();
 			auto lightDistance = lightDirection.Length();
 			// Normalize light distance
@@ -49,6 +48,7 @@ CRT::Color CRT::RayTracer::CalculateColor(CRT::Ray& ray) {
 			auto cosLaw = std::max<double>(0.0, Dot(lightDirection, hitObject.GetNormal()));
 			auto areaOfLightSphere = 4 * PI * lightDistance * lightDistance;
 
+			// Add small portion of the triangle's normal as offset to fix shadow acne
 			CRT::Ray shadowRay = CRT::Ray(hitObject.GetPointOfIntersection() + hitObject.GetNormal() * 0.00001, lightDirection);
 			CRT::Triangle tempHit;
 
@@ -58,6 +58,7 @@ CRT::Color CRT::RayTracer::CalculateColor(CRT::Ray& ray) {
 		return finalColor;
 	}
 
+	// If nothing is hit return the scene's background color
 	return m_Scene.get()->GetSceneSettings().get()->GetBackgroundColor();
 }
 
@@ -68,6 +69,7 @@ void CRT::RayTracer::Render() {
 	int height = settings.get()->GetHeight();
 	double aspectRatio = (double)width / height;
 
+	// Angle of the camera's fov
 	auto fov = 90.0;
 	auto halfA = tan(fov / 2 * PI / 180);
  
