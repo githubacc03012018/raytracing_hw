@@ -7,3 +7,7 @@ CRT::Point3 CRT::Ray::GetAt(double t) {
 CRT::Vector3 CRT::Ray::GetDirection() {
 	return m_Direction;
 }
+
+CRT::Point3 CRT::Ray::GetOrigin() {
+	return m_Origin;
+}

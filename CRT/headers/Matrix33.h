@@ -5,7 +5,20 @@ namespace CRT {
 	auto const PI = 3.14159265359;
 	class Matrix33 {
 	public:
-		Matrix33() {}
+		Matrix33() {
+			data[0][0] = 0;
+			data[0][1] = 0;
+			data[0][2] = 0;
+
+			data[1][0] = 0;
+			data[1][1] = 0;
+			data[1][2] = 0;
+
+			data[2][0] = 0;
+			data[2][1] = 0;
+			data[2][2] = 0;	
+		}
+
 		Matrix33(double a, double b, double c, double d, double e, double f, double g, double h, double i) {
 
 			data[0][0] = a;
@@ -46,7 +59,7 @@ namespace CRT {
 
 
 	inline Vector3 operator*(const Matrix33& m, const Vector3& v) {
-		Vector3 res;
+		Vector3 res = Vector3(0, 0, 0);
 
 		for (int i = 0; i <= 2; i++) {
 			for (int j = 0; j <= 2; j++) {

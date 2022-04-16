@@ -14,11 +14,7 @@ namespace CRT {
 	}
 
 	Vector3 CRT::Triangle::GetNormal() {
-		auto edge0 = v1() - v0();
-		auto edge1 = v2() - v1();
-
-		m_Normal = cross(edge0, edge1).Normalize();
-		return m_Normal;
+		 return m_Normal;
 	}
 
 	double CRT::Triangle::Area() {
@@ -28,43 +24,34 @@ namespace CRT {
 		return cross(edge0, edge1).Length() / 2;
 	}
 
-	bool CRT::Triangle::HasRayIntersection(CRT::Ray& r, double tMin, double closestT, Point3 cameraPos) {
-		constexpr float kEpsilon = 1e-8;
-		Vector3 v0v1 = v1() - v0();
-		Vector3 v0v2 = v2() - v0();
+	bool CRT::Triangle::HasRayIntersection(CRT::Ray& r, double tMin, double closestT, double& t) {
+		constexpr double kEpsilon = 1e-8;
+		Vector3 v1v0 = v1() - v0();
+		Vector3 v2v0 = v2() - v0();
 
-		auto normal = cross(v0v1, v0v2).Normalize();
-		bool isFrontFace = Dot(r.GetDirection(), normal) < 0;
-		m_Normal = isFrontFace ? normal : normal * -1;
-
-	 
-		auto s = Dot(normal, r.GetDirection()); //no normalize
+		m_Normal = cross(v1v0, v2v0).Normalize();
+		
+		auto s = Dot(m_Normal, r.GetDirection());
 		if (abs(s) < kEpsilon) {
 			return false;
 		}
 
-		auto d = -Dot(normal, v0());
-		auto t = -(Dot(normal, cameraPos) + d) / s;
-
-		if (t < 0) {
-			return false;
-		}
-
-		if (t > closestT || t < tMin) return false;
+		auto d = -Dot(m_Normal, v0());
+		//TODO: t = -(N.dotProduct(orig) + d) / NdotRayDirection; 
+		auto tempT = -(Dot(m_Normal, r.GetOrigin()) + d) / s;
+ 
+		if (tempT > closestT || tempT < tMin) return false;
 
 		//P(t) = origin + t * rayDirection	
-		auto P = r.GetAt(t);
+		auto P = r.GetAt(tempT);
+		t = tempT;
 		m_IntersectionPoint = P;
-		
-
-		//Save the point itself
-		this->t = t;
-
+ 
 		//edge 0
 		auto edge0 = v1() - v0();
 		auto vp0 = P - v0();
 		auto C = cross(edge0, vp0);
-		if (Dot(normal, C) < 0) {
+		if (Dot(m_Normal, C) < 0) {
 			return false;
 		}
 
@@ -72,7 +59,7 @@ namespace CRT {
 		auto edge1 = v2() - v1();
 		auto vp1 = P - v1();
 		C = cross(edge1, vp1);
-		if (Dot(normal, C) < 0) {
+		if (Dot(m_Normal, C) < 0) {
 			return false;
 		}
 
@@ -80,7 +67,7 @@ namespace CRT {
 		auto edge2 = v0() - v2();
 		auto vp2 = P - v2();
 		C = cross(edge2, vp2);
-		if (Dot(normal, C) < 0) {
+		if (Dot(m_Normal, C) < 0) {
 			return false;
 		}
 
@@ -90,11 +77,7 @@ namespace CRT {
 	Point3 CRT::Triangle::GetPointOfIntersection() {
 		return m_IntersectionPoint;
 	}
-
-	double CRT::Triangle::GetT() {
-		return t;
-	}
-
+ 
 	Color CRT::Triangle::GetColor() {
 		return m_Color;
 	}

@@ -1,6 +1,6 @@
 #include "Camera.h"
 CRT::Matrix33 CRT::Camera::GetRotationMatrix() {
-	return *m_RotationMatrix;
+	return m_RotationMatrix;
 }
 
 double CRT::Camera::GetHalfAlfa() {
@@ -12,10 +12,10 @@ CRT::Point3 CRT::Camera::GetPosition() {
 	return m_Position;
 }
 
-CRT::Ray CRT::Camera::GetRay(double x, double y) {
-	auto rayDirection = (CRT::Point3(x, y, -1) - m_Position).Normalize();
-	CRT::Ray r = CRT::Ray(m_Position, (*m_RotationMatrix) * rayDirection);
- 
+CRT::Ray CRT::Camera::GenerateRay(double x, double y, CRT::Vector3 origin) {
+	auto rayDirection = (m_RotationMatrix * CRT::Point3(x, y, -1)).Normalize();
+	CRT::Ray r = CRT::Ray(origin, rayDirection);
+
 	return r;
 }
 
@@ -26,5 +26,5 @@ void CRT::Camera::Pan(double degrees) {
 						sin(rad), 0, cos(rad)
 	};
 
-	*m_RotationMatrix = *(m_RotationMatrix.get()) * rotateY;
+	m_RotationMatrix = m_RotationMatrix * rotateY;
 }

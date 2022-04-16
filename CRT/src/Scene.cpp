@@ -21,27 +21,27 @@ inline rapidjson::Document LoadDocument(const std::string& filename) {
 inline CRT::Vector3 LoadVector(const rapidjson::Value::ConstArray& arr) {
 	assert(arr.Size() == 3);
 
-	CRT::Vector3 vector(arr[0].GetDouble(),
+	CRT::Vector3 vector = CRT::Vector3(arr[0].GetDouble(),
 		arr[1].GetDouble(),
 		arr[2].GetDouble());
 
 	return vector;
 }
 
-inline std::shared_ptr<CRT::Matrix33> LoadCameraMatrix(const rapidjson::Value::ConstArray& arr) {
+inline CRT::Matrix33 LoadCameraMatrix(const rapidjson::Value::ConstArray& arr) {
 	double values[9] = { 0 };
 	for (int i = 0; i < arr.Size(); i++) {
 		values[i] = arr[i].GetDouble();
 	}
 
-	std::shared_ptr<CRT::Matrix33> m = std::make_shared<CRT::Matrix33>(values[0], values[1], values[2],
-																		values[3], values[4], values[5],
-																		values[6], values[7], values[8]);
-	
+	CRT::Matrix33 m = CRT::Matrix33(values[0], values[1], values[2],
+		values[3], values[4], values[5],
+		values[6], values[7], values[8]);
+
 	return m;
 }
 
-std::vector<CRT::Triangle> CRT::Scene::LoadObjects(const rapidjson::Value::ConstArray& arr, const rapidjson::Value::ConstArray& indeces) {
+std::vector<CRT::Triangle> CRT::Scene::LoadTriangles(const rapidjson::Value::ConstArray& arr, const rapidjson::Value::ConstArray& indeces) {
 	std::vector<CRT::Vector3> vertices;
 	std::vector<CRT::Triangle> objects;
 
@@ -62,7 +62,7 @@ std::vector<CRT::Triangle> CRT::Scene::LoadObjects(const rapidjson::Value::Const
 		vertices.push_back(point);
 	}
 
-	//Load triangles
+	// Load triangles
 	internalCounter = 0;
 	while (internalCounter < indeces.Size()) {
 		CRT::Point3 points[3];
@@ -73,13 +73,42 @@ std::vector<CRT::Triangle> CRT::Scene::LoadObjects(const rapidjson::Value::Const
 			internalCounter++;
 		}
 
-		CRT::Triangle t = CRT::Triangle(points[0], points[1], points[2], CRT::Color(RandomDouble(0, 1), RandomDouble(0, 1), RandomDouble(0, 1)));
+		CRT::Triangle t = CRT::Triangle(points[0], points[1], points[2], CRT::Color(0, 0, 0));
 		objects.push_back(t);
 	}
 
 	return objects;
 }
- 
+
+std::vector<CRT::Triangle> CRT::Scene::LoadObjects(const rapidjson::Document& document) {
+	const auto objectsArray = document.FindMember("objects")->value.GetArray();
+	std::vector<CRT::Triangle> allTriangles;
+
+	for (int i = 0; i < objectsArray.Size(); i++) {
+		const rapidjson::Value& vertices = objectsArray[i].FindMember("vertices")->value;
+		const rapidjson::Value& indeces = objectsArray[i].FindMember("triangles")->value;
+		auto nObjectTriangles = LoadTriangles(vertices.GetArray(), indeces.GetArray());
+
+		allTriangles.insert(std::end(allTriangles), std::begin(nObjectTriangles), std::end(nObjectTriangles));
+	}
+
+	return allTriangles;
+}
+
+std::vector<CRT::Light> CRT::Scene::LoadLights(const rapidjson::Document& document) {
+	std::vector<CRT::Light> lights;
+	auto lightsArray = document.FindMember("lights")->value.GetArray();
+
+	for (int i = 0; i < lightsArray.Size(); i++) {
+		int intensity = lightsArray[i].FindMember("intensity")->value.GetInt();
+		CRT::Point3 position = LoadVector(lightsArray[i].FindMember("position")->value.GetArray());
+
+		CRT::Light light(intensity, position, CRT::Color(RandomDouble(0, 1), RandomDouble(0, 1), RandomDouble(0, 1)));
+		lights.push_back(light);
+	}
+
+	return lights;
+}
 
 std::shared_ptr<CRT::Scene> CRT::Scene::LoadScene(const std::string& sceneName) {
 	rapidjson::Document doc = LoadDocument(sceneName);
@@ -93,14 +122,13 @@ std::shared_ptr<CRT::Scene> CRT::Scene::LoadScene(const std::string& sceneName) 
 	auto h = widhtHeight.FindMember("height")->value.GetInt();
 
 	auto color = LoadVector(backgroundColor.GetArray());
-	std::shared_ptr<CRT::SceneSettings> settings = std::make_shared<CRT::SceneSettings>(w,h,color);
-	
-	//Load objects
-	auto objects = doc.FindMember("objects")->value.GetArray();
+	std::shared_ptr<CRT::SceneSettings> settings = std::make_shared<CRT::SceneSettings>(w, h, color);
 
-	const rapidjson::Value& vertices = objects[0].FindMember("vertices")->value;
-	const rapidjson::Value& indeces = objects[0].FindMember("triangles")->value;
-	std::vector<CRT::Triangle> triangles = LoadObjects(vertices.GetArray(), indeces.GetArray());
+	// Load objects
+	auto triangles = LoadObjects(doc);
+
+	// Load lights
+	std::vector<CRT::Light> lights = LoadLights(doc);
 
 	//Load camera
 	const rapidjson::Value& cameraVal = doc.FindMember("camera")->value;
@@ -109,9 +137,9 @@ std::shared_ptr<CRT::Scene> CRT::Scene::LoadScene(const std::string& sceneName) 
 
 	auto matrix = LoadCameraMatrix(matrixArray);
 	auto position = LoadVector(positionArray);
-	 
+
 	std::shared_ptr<CRT::Camera> cam = std::make_shared<CRT::Camera>(matrix, position);
-	std::shared_ptr<CRT::Scene> scene = std::make_shared<CRT::Scene>(cam, settings, triangles);
+	std::shared_ptr<CRT::Scene> scene = std::make_shared<CRT::Scene>(cam, settings, triangles, lights);
 
 	return scene;
 }
@@ -126,4 +154,8 @@ std::vector<CRT::Triangle> CRT::Scene::GetTriangles() {
 
 std::shared_ptr<CRT::Camera> CRT::Scene::GetCamera() {
 	return m_Camera;
+}
+
+std::vector<CRT::Light> CRT::Scene::GetLights() {
+	return m_Lights;
 }
