@@ -17,6 +17,13 @@ namespace CRT {
 		 return m_Normal;
 	}
 
+	Point3 CRT::Triangle::GetVertex(int i) {
+		if (i == 0) return v0();
+		if (i == 1) return v1();
+
+		return v2();
+	}
+
 	double CRT::Triangle::Area() {
 		auto edge0 = v1() - v0();
 		auto edge1 = v2() - v1();
@@ -30,7 +37,7 @@ namespace CRT {
 		Vector3 v2v0 = v2() - v0();
 
 		m_Normal = cross(v1v0, v2v0).Normalize();
-		
+
 		auto s = Dot(m_Normal, r.GetDirection());
 		if (abs(s) < kEpsilon) {
 			return false;
@@ -39,14 +46,14 @@ namespace CRT {
 		auto d = -Dot(m_Normal, v0());
 		//TODO: t = -(N.dotProduct(orig) + d) / NdotRayDirection; 
 		auto tempT = -(Dot(m_Normal, r.GetOrigin()) + d) / s;
- 
+		
 		if (tempT > closestT || tempT < tMin) return false;
 
 		//P(t) = origin + t * rayDirection	
 		auto P = r.GetAt(tempT);
 		t = tempT;
 		m_IntersectionPoint = P;
- 
+
 		//edge 0
 		auto edge0 = v1() - v0();
 		auto vp0 = P - v0();
@@ -81,4 +88,12 @@ namespace CRT {
 	Color CRT::Triangle::GetColor() {
 		return m_Color;
 	}
+
+	double CRT::Triangle::GetT() {
+		return t;
+	}
 }
+
+//std::vector<int>  CRT::Triangle::GetIndeces() {
+//	return m_triangleVertexIndeces;
+//}

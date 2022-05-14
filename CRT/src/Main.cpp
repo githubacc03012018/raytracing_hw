@@ -1,8 +1,8 @@
 #include "RayTracer.h" 
- 
-int main() { 
+
+int main() {
 	CRT::Scene scene;
-	std::shared_ptr<CRT::Scene> loadedScene = scene.LoadScene("scene3.crtscene");
+	std::shared_ptr<CRT::Scene> loadedScene = scene.LoadScene("scene1.crtscene");
 
 	CRT::RayTracer tracer(loadedScene);
 	tracer.Render();

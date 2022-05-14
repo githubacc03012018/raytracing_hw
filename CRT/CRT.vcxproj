@@ -151,15 +151,23 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="headers\RayTracer.h" />
+    <ClCompile Include="src\Vertex.cpp" />
+    <ClInclude Include="headers\HitInformation.h" />
+    <ClInclude Include="headers\Material.h" />
+    <ClInclude Include="headers\Object.h" />
+    <ClInclude Include="headers\RayTracer.h" />
     <ClCompile Include="src\Camera.cpp" />
+    <ClCompile Include="src\HitInformation.cpp" />
     <ClCompile Include="src\Light.cpp" />
     <ClCompile Include="src\Main.cpp" />
+    <ClCompile Include="src\Material.cpp" />
+    <ClCompile Include="src\Object.cpp" />
     <ClCompile Include="src\Ray.cpp" />
     <ClCompile Include="src\RayTracer.cpp" />
     <ClCompile Include="src\Scene.cpp" />
     <ClCompile Include="src\SceneSettings.cpp" />
     <ClCompile Include="src\Triangle.cpp" />
+    <ClInclude Include="headers\Vertex.h" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="headers\Camera.h" />

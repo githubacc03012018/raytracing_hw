@@ -10,7 +10,7 @@ namespace CRT {
 		CRT::Matrix33 GetRotationMatrix();
 		CRT::Point3 GetPosition();
 		double GetHalfAlfa();
-		CRT::Ray GenerateRay(double x, double y, CRT::Vector3 transformedOrigin);
+		CRT::Ray GenerateRay(double x, double y);
 		void Pan(double degrees);
 	private:
 		 CRT::Matrix33 m_RotationMatrix;
