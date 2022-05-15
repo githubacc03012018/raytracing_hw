@@ -77,7 +77,7 @@ CRT::Color CRT::RayTracer::CalculateColor(CRT::Ray& ray, int depth) {
 	}
 
 	// If nothing is hit return the scene's background color
-	return m_Scene.get()->GetSceneSettings().get()->GetBackgroundColor();
+	return m_Scene.get()->GetSceneSettings().get()->GetBackgroundColor();	
 }
 
 void CRT::RayTracer::Render() {
