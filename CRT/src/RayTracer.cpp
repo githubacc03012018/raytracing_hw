@@ -1,6 +1,6 @@
 #include "RayTracer.h"
 #include <string>
-
+#include <chrono>
 
 inline double Clamp(double x, double min, double max) {
 	if (x < min) return min;
@@ -25,7 +25,7 @@ bool CRT::RayTracer::HasRayIntersection(CRT::Ray& ray, CRT::HitInformation& hitI
 			hitInfo = temp;
 		}
 	}
-
+	 
 	return hasHitAnything;
 }
 
@@ -45,9 +45,9 @@ CRT::Color CRT::RayTracer::CalculateColor(CRT::Ray& ray, int depth) {
 	}
 
 	if (HasRayIntersection(ray, hitInfo)) {
-		auto matType = hitInfo.mat.get()->GetMaterialType();
+		auto matType = hitInfo.mat.GetMaterialType();
 
-		if (*matType.get() == MaterialType::Diffuse) {
+		if (matType == MaterialType::Diffuse) {
 			for (const auto& light : lights) {
 				// Calculate the direction of the light
 				auto lightDirection = light.GetPosition() - hitInfo.point;
@@ -64,20 +64,21 @@ CRT::Color CRT::RayTracer::CalculateColor(CRT::Ray& ray, int depth) {
 				CRT::HitInformation tempHit;
 
 				// If shadow ray hits an object, then the original point is in shadow, else calculate the color of the light
-				finalColor += HasRayIntersection(shadowRay, tempHit) ? Color(0, 0, 0) :  light.GetIntensity() * light.GetColor() * cosLaw / areaOfLightSphere * (*hitInfo.mat->GetColor()); //Color(0, 0.2, 0.2)
+				finalColor += HasRayIntersection(shadowRay, tempHit) ? Color(0, 0, 0) : light.GetIntensity() * light.GetColor() * cosLaw / areaOfLightSphere * hitInfo.mat.GetColor();//(*hitInfo.mat->GetColor()); //Color(0, 0.2, 0.2)
 			}
 		}
 		else {
 			CRT::Vector3 reflectedDirection = reflect(ray.GetDirection(), hitInfo.normal);
 			CRT::Ray reflectedRay = CRT::Ray(hitInfo.point, reflectedDirection.Normalize());
-			finalColor += CalculateColor(reflectedRay, depth - 1) + *hitInfo.mat.get()->GetColor();
+			//finalColor += CalculateColor(reflectedRay, depth - 1) + *hitInfo.mat.get()->GetColor();
+			finalColor += CalculateColor(reflectedRay, depth - 1) + hitInfo.mat.GetColor();
 		}
 
 		return finalColor;
 	}
 
 	// If nothing is hit return the scene's background color
-	return m_Scene.get()->GetSceneSettings().get()->GetBackgroundColor();	
+	return m_Scene.get()->GetSceneSettings().get()->GetBackgroundColor();
 }
 
 void CRT::RayTracer::Render() {
@@ -90,29 +91,41 @@ void CRT::RayTracer::Render() {
 	// Angle of the camera's fov
 	auto fov = 90.0;
 	auto halfA = tan(fov / 2 * PI / 180);
+	//auto moveDir = CRT::Vector3(-0.5, -1, 0.5);
+	auto moveDir = CRT::Vector3(-0.2, 0, 0);
+	double spinAmount = 5; //5 degrees spin
 
-	std::cout << "Working.." << std::endl;
-	std::fstream myfile;
-	std::string imageName = std::string("image.ppm");
+	auto start = std::chrono::high_resolution_clock::now();
 
-	myfile.open(imageName, std::ios::out);
-	myfile << "P3 \n";
-	myfile << width << " " << height << "\n";
-	myfile << "255 \n";
+	for (int i = 0; i < 1; i++) {
 
-	CRT::Scene scene = *m_Scene.get();
-	CRT::Camera cam = *scene.GetCamera().get();
+		std::cout << "Working.." << std::endl;
+		std::fstream myfile;
+		std::string imageName = std::string("image_") + std::to_string(i) + std::string(".ppm");
 
-	for (int i = 0; i < height; i++) {
-		for (int j = 0; j < width; j++) {
-			auto pixelX = (2 * (j + 0.5) / (double)width - 1) * aspectRatio * halfA;
-			auto pixelY = (1 - 2 * (i + 0.5) / (double)height) * halfA;
-			CRT::Ray ray = scene.GetCamera().get()->GenerateRay(pixelX, pixelY);
-			WriteColor(myfile, CalculateColor(ray, 20));
+		myfile.open(imageName, std::ios::out);
+		myfile << "P3 \n";
+		myfile << width << " " << height << "\n";
+		myfile << "255 \n";
+
+
+		CRT::Scene scene = *m_Scene.get();
+
+		scene.GetCamera().get()->Pan(spinAmount);
+		scene.GetCamera().get()->Move(moveDir);
+
+		for (int i = 0; i < height; i++) {
+			for (int j = 0; j < width; j++) {
+				auto pixelX = (2 * (j + 0.5) / (double)width - 1) * aspectRatio * halfA;
+				auto pixelY = (1 - 2 * (i + 0.5) / (double)height) * halfA;
+				CRT::Ray ray = scene.GetCamera().get()->GenerateRay(pixelX, pixelY);
+				WriteColor(myfile, CalculateColor(ray, 20));
+			}
+
+			std::cout << "Scanlines remaining..." << height - i << std::endl;
 		}
-
-		std::cout << "Scanlines remaining..." << height - i << std::endl;
 	}
-
-	std::cout << "Done!" << std::endl;
+	auto stop = std::chrono::high_resolution_clock::now();
+	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+	std::cout << "Done. It took " << duration.count() * 1 / 1000 << " milliseconds" << std::endl;
 }

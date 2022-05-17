@@ -12,6 +12,7 @@ namespace CRT {
 		double GetHalfAlfa();
 		CRT::Ray GenerateRay(double x, double y);
 		void Pan(double degrees);
+		void Move(CRT::Vector3& moveDirection);
 	private:
 		 CRT::Matrix33 m_RotationMatrix;
 		 CRT::Point3 m_Position;

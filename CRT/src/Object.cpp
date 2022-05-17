@@ -1,4 +1,4 @@
-#include "Object.h" 
+#include "Object.h"
 
 bool CRT::Object::HasRayIntersection(CRT::Ray& ray, CRT::HitInformation& hitInfo) {
 	std::vector<CRT::Triangle> triangles = this->GetMesh();
@@ -9,7 +9,7 @@ bool CRT::Object::HasRayIntersection(CRT::Ray& ray, CRT::HitInformation& hitInfo
 	double minT = 0.001;
 	
 	for (auto& tri : triangles) {
-		if (tri.HasRayIntersection(ray, minT, maxT, tempT)) {
+		if (tri.HasRayIntersection(ray, this->GetMaterial().GetSmoothShading(), minT, maxT, tempT)) {
 			hasHitAnything = true;
 			maxT = tempT;
 
@@ -27,10 +27,10 @@ std::vector<CRT::Triangle> CRT::Object::GetMesh() {
 	return m_Mesh;
 }
 
-std::shared_ptr<CRT::Material> CRT::Object::GetMaterial() {
+CRT::Material CRT::Object::GetMaterial() {
 	return m_Material;
 }
 
-//std::vector<CRT::Vertex> CRT::Object::GetAllVerticesForMesh() {
-//	return m_Vertices;
-//}
+/*std::shared_ptr<CRT::Material> CRT::Object::GetMaterial() {
+	return m_Material;
+}*/

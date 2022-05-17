@@ -18,16 +18,15 @@ namespace CRT {
 			m_Camera(camera), 
 			m_SceneSettings(settings), m_Objects(objects) {}
 		Scene() {}
-		std::vector<CRT::Object> LoadObjects(const rapidjson::Document& doc, const std::vector<CRT::Material>& mats);
 		std::vector<CRT::Material> LoadMaterials(const rapidjson::Document& document);
 		std::shared_ptr<CRT::Scene> LoadScene(const std::string& sceneName);
-		std::vector<CRT::Triangle> LoadTriangles(const rapidjson::Value::ConstArray& arr, const rapidjson::Value::ConstArray& indeces);
+		//std::vector<CRT::Triangle> LoadTriangles(const rapidjson::Value::ConstArray& arr, const rapidjson::Value::ConstArray& indeces);
 		std::vector<CRT::Object> GetObjects();
 		std::shared_ptr<CRT::SceneSettings> GetSceneSettings();
 		std::shared_ptr<CRT::Camera> GetCamera();
 		std::vector<CRT::Light> GetLights();
 		std::vector<CRT::Light> LoadLights(const rapidjson::Document& doc);
-		void NormalizeMesh(CRT::Object* object);
+		std::vector<CRT::Object> LoadObject(const rapidjson::Document& document, const std::vector<CRT::Material>& mats);
 	private:
 		std::shared_ptr<CRT::SceneSettings> m_SceneSettings;
 		std::shared_ptr<CRT::Camera> m_Camera;

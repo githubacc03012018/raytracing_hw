@@ -1,37 +1,26 @@
 #pragma once
 #include "Ray.h"
 #include "HitInformation.h"
+#include "Vertex.h"
 
 namespace CRT {
 	class Triangle {
 	public:
-		// std::vector<int> triangleVertexIndeces, 
-		Triangle(CRT::Point3 v0, CRT::Point3 v1, CRT::Point3 v2, CRT::Color c) : m_Vertices{ v0, v1, v2 }, m_Color{ c } {}
-		Triangle() : m_Vertices{
-			CRT::Point3{}, CRT::Point3{}, CRT::Point3{}
-		} {}
-		Point3 v0();
-		Point3 v1();
-		Point3 v2();
+		Triangle(CRT::Vertex v0, CRT::Vertex v1, CRT::Vertex v2) : m_VVertices{ v0, v1, v2 } {}
+		Vertex vv0();
+		Vertex vv1();
+		Vertex vv2();
 		Point3 GetPointOfIntersection();
-		Point3 GetVertex(int i);
 		Vector3 GetNormal();
-		Color GetColor();
 		double Area();
 		double GetT();
-		//bool HasRayIntersection(CRT::Ray& r, CRT::Point3 cameraPos, double& t);
-		bool HasRayIntersection(CRT::Ray& r, double tMin, double closestT, double& t);
-		//std::vector<int>  GetIndeces();
-	private:
-		CRT::Point3 m_Vertices[3];
-		CRT::Color m_Color;
-		//std::shared_ptr<double> t;
-		
+		bool HasRayIntersection(CRT::Ray& r, bool smoothShading, double tMin, double closestT, double& t);
+		 
+		CRT::Vertex m_VVertices[3];
+	private: 
 		double t;
 		CRT::Point3 m_IntersectionPoint;
 		CRT::Vector3 m_Normal;
-		//std::vector<int> m_triangleVertexIndeces;
 	};
-
 }
   

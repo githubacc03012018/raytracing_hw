@@ -14,9 +14,14 @@ CRT::Point3 CRT::Camera::GetPosition() {
 
 CRT::Ray CRT::Camera::GenerateRay(double x, double y) {
 	auto rayDirection = (CRT::Point3(x, y, -1)).Normalize();
-	CRT::Ray r = CRT::Ray(m_Position, rayDirection);
+	CRT::Ray r = CRT::Ray(m_RotationMatrix * m_Position, m_RotationMatrix * rayDirection);
 
 	return r;
+}
+
+void CRT::Camera::Move(CRT::Vector3& moveDir) {
+	auto transformedDir = m_RotationMatrix * moveDir;
+	m_Position += transformedDir;
 }
 
 void CRT::Camera::Pan(double degrees) {
@@ -25,6 +30,6 @@ void CRT::Camera::Pan(double degrees) {
 						0,			1,	0,
 						sin(rad),	0,	cos(rad)
 	};
-	 
-	/**m_RotationMatrix = (*m_RotationMatrix) * rotateY;*/
+	
+	m_RotationMatrix = m_RotationMatrix * rotateY;
 }

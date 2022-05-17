@@ -1,5 +1,7 @@
 #include "Vertex.h"
-
+CRT::Point3 CRT::Vertex::GetPosition() {
+	return m_Position;
+}
 CRT::Vector3 CRT::Vertex::GetNormal() {
 	return m_Normal;
 };

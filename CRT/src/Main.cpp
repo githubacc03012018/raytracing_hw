@@ -2,7 +2,7 @@
 
 int main() {
 	CRT::Scene scene;
-	std::shared_ptr<CRT::Scene> loadedScene = scene.LoadScene("scene1.crtscene");
+	std::shared_ptr<CRT::Scene> loadedScene = scene.LoadScene("scene3.crtscene");
 
 	CRT::RayTracer tracer(loadedScene);
 	tracer.Render();
