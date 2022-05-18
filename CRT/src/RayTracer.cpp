@@ -127,7 +127,9 @@ void CRT::RayTracer::Render() {
 			std::cout << "Scanlines remaining..." << height - i << std::endl;
 		}
 
-		// Rotation by first panning the camera around the Y axis and then moving it in a constant direction
+		// Rotation by first panning the camera around the Y axis and then moving it in a constant direction.
+		// Can be implemented as a single transformation matrix containing both transformations at once.
+
 		/*scene.GetCamera().get()->Pan(spinAmount);
 		scene.GetCamera().get()->Move(moveDir);*/
 	}

@@ -157,7 +157,6 @@
     <ClInclude Include="headers\Object.h" />
     <ClInclude Include="headers\RayTracer.h" />
     <ClCompile Include="src\Camera.cpp" />
-    <ClCompile Include="src\HitInformation.cpp" />
     <ClCompile Include="src\Light.cpp" />
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\Material.cpp" />
