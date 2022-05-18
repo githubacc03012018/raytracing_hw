@@ -41,65 +41,6 @@ inline CRT::Matrix33 LoadCameraMatrix(const rapidjson::Value::ConstArray& arr) {
 	return m;
 }
 
-//std::vector<CRT::Triangle> CRT::Scene::LoadTriangles(const rapidjson::Value::ConstArray& arr, const rapidjson::Value::ConstArray& indeces) {
-//	std::vector<CRT::Vector3> vertices;
-//	std::vector<CRT::Triangle> triangles;
-//
-//	int vertexCounter = 0;
-//	int internalCounter = 0;
-//
-//	// Load vertex points
-//	while (internalCounter < arr.Size()) {
-//		double vertexCoordinates[3];
-//		for (int i = 0; i < 3; i++) {
-//			auto vertex = arr[internalCounter].GetDouble();
-//			vertexCoordinates[i] = vertex;
-//			internalCounter++;
-//		}
-//
-//
-//		CRT::Point3 point = CRT::Point3(vertexCoordinates[0], vertexCoordinates[1], vertexCoordinates[2]);
-//		vertices.push_back(point);
-//	}
-//	 
-//	// Load triangles
-//	internalCounter = 0;
-//	while (internalCounter < indeces.Size()) {
-//		CRT::Point3 points[3];
-//		for (int i = 0; i < 3; i++) {
-//			int index = indeces[internalCounter].GetInt();
-//			auto v = vertices[index];
-//			points[i] = v;
-//			internalCounter++;
-//		}
-//
-//		CRT::Triangle t = CRT::Triangle(points[0], points[1], points[2], CRT::Color(0, 0, 0));
-//		triangles.push_back(t);
-//	}
-//
-//	return triangles;	
-//}
-//
-//std::vector<CRT::Object> CRT::Scene::LoadObjects(const rapidjson::Document& document, const std::vector<CRT::Material>& mats) {
-//	const auto objectsArray = document.FindMember("objects")->value.GetArray();
-//	std::vector<CRT::Object> objects;
-//
-//	for (int i = 0; i < objectsArray.Size(); i++) {
-//		const rapidjson::Value& vertices = objectsArray[i].FindMember("vertices")->value;
-//		const rapidjson::Value& indeces = objectsArray[i].FindMember("triangles")->value;
-//		int materialIndex = objectsArray[i].FindMember("material_index")->value.GetInt();
-//
-//		std::vector<CRT::Triangle> tris = LoadTriangles(vertices.GetArray(), indeces.GetArray());
-//
-//		auto material = mats[materialIndex];
-//
-//		CRT::Object obj = CRT::Object(tris, std::make_shared<CRT::Material>(material));
-//		objects.push_back(obj);
-//	}
-//
-//	return objects;
-//}
-
 std::vector<CRT::Light> CRT::Scene::LoadLights(const rapidjson::Document& document) {
 	std::vector<CRT::Light> lights;
 	auto lightsArray = document.FindMember("lights")->value.GetArray();
@@ -184,14 +125,6 @@ std::vector<CRT::Material> CRT::Scene::LoadMaterials(const rapidjson::Document& 
 
 }
 
-//TODO:
-// Load vertices separatly
-// Load triangleIndeces int vert[3] containing the index of the vertex
-// Calculate vertex normals
-// Create triangles from the normalized vertices
-// Create object from the triangles
-
-
 std::vector<CRT::Vertex> LoadVertexArray(const rapidjson::Value::ConstArray& arr) {
 	std::vector<CRT::Vertex> verts;
 
@@ -217,25 +150,27 @@ std::vector<CRT::Object> CRT::Scene::LoadObject(const rapidjson::Document& docum
 	for (int i = 0; i < objectsArray.Size(); i++) {
 		std::vector<CRT::Triangle> triangles;
 		std::vector<std::vector<int>> face;
-		const rapidjson::Value& indeces = objectsArray[i].FindMember("triangles")->value;
-		auto indexArray = indeces.GetArray();
+		const rapidjson::Value& indices = objectsArray[i].FindMember("triangles")->value;
+		auto indexArray = indices.GetArray();
 		int internalCounter = 0;
 
-		std::vector<int> asd;
-		while (internalCounter < indeces.Size()) {
-			asd.clear();
+		// Load triangle indices as 'faces'
+		std::vector<int> tempFaces;
+		while (internalCounter < indices.Size()) {
+			tempFaces.clear();
 			for (int i = 0; i < 3; i++) {
-				asd.push_back(indexArray[internalCounter].GetInt());
+				tempFaces.push_back(indexArray[internalCounter].GetInt());
 				internalCounter++;
 			}
 
-			face.push_back(asd);
+			face.push_back(tempFaces);
 		}
 
+		// Load vertices
 		const rapidjson::Value& vertices = objectsArray[i].FindMember("vertices")->value;
 		auto vertexArray = LoadVertexArray(vertices.GetArray());
 
-		// for every triangle
+		// For every face calculate it's area and add it to the vertices' normal
 		for (auto& f : face) {
 			auto ia = f[0];
 			auto ib = f[1];
@@ -252,10 +187,12 @@ std::vector<CRT::Object> CRT::Scene::LoadObject(const rapidjson::Document& docum
 			triangles.push_back(t);
 		} 
 
+		// Normalize the normals
 		for (int i = 0; i < vertexArray.size(); i++) {
 			vertexArray[i].m_Normal = vertexArray[i].m_Normal.Normalize();
 		}
 		
+		// Add the material to the object
 		int materialIndex = objectsArray[i].FindMember("material_index")->value.GetInt();
 		auto material = mats[materialIndex];
 
@@ -265,28 +202,3 @@ std::vector<CRT::Object> CRT::Scene::LoadObject(const rapidjson::Document& docum
 
 	return objects;
 }
-
-//void Mesh_normalize( Mesh *myself )
-//{
-//    Vert     *vert = myself->vert;
-//    Triangle *face = myself->face;
-//
-//    for( int i=0; i<myself->mNumVerts; i++ ) vert[i].normal = vec3(0.0f);
-//
-//    for( int i=0; i<myself->mNumFaces; i++ )
-//    {
-//        const int ia = face[i].v[0];
-//        const int ib = face[i].v[1];
-//        const int ic = face[i].v[2];
-//
-//        const vec3 e1 = vert[ia].pos - vert[ib].pos;
-//        const vec3 e2 = vert[ic].pos - vert[ib].pos;
-//        const vec3 no = cross( e1, e2 );
-//
-//        vert[ia].normal += no;
-//        vert[ib].normal += no;
-//        vert[ic].normal += no;
-//    }
-//
-//    for( i=0; i<myself->mNumVerts; i++ ) verts[i].normal = normalize( verts[i].normal );
-//}

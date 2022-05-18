@@ -20,7 +20,6 @@ namespace CRT {
 		Scene() {}
 		std::vector<CRT::Material> LoadMaterials(const rapidjson::Document& document);
 		std::shared_ptr<CRT::Scene> LoadScene(const std::string& sceneName);
-		//std::vector<CRT::Triangle> LoadTriangles(const rapidjson::Value::ConstArray& arr, const rapidjson::Value::ConstArray& indeces);
 		std::vector<CRT::Object> GetObjects();
 		std::shared_ptr<CRT::SceneSettings> GetSceneSettings();
 		std::shared_ptr<CRT::Camera> GetCamera();

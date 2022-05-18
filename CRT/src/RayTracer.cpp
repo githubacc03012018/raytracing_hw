@@ -8,10 +8,12 @@ inline double Clamp(double x, double min, double max) {
 	return x;
 }
 
-inline void WriteColor(std::fstream& file, CRT::Color pixelColor) {
-	file << static_cast<int>(255.999 * Clamp(pixelColor.x(), 0.0, 0.999)) << ' '
-		<< static_cast<int>(255.999 * Clamp(pixelColor.y(), 0.0, 0.999)) << ' '
-		<< static_cast<int>(255.999 * Clamp(pixelColor.z(), 0.0, 0.999)) << '\n';
+inline void WriteColor(std::fstream& file, CRT::Color pixelColor, int samplesPerPixel) {
+	auto scale = 1.0 / samplesPerPixel;
+
+	file << static_cast<int>(255.999 * Clamp(pixelColor.x() * scale, 0.0, 0.999)) << ' '
+		<< static_cast<int>(255.999 * Clamp(pixelColor.y() * scale, 0.0, 0.999)) << ' '
+		<< static_cast<int>(255.999 * Clamp(pixelColor.z() * scale, 0.0, 0.999)) << '\n';
 }
 
 bool CRT::RayTracer::HasRayIntersection(CRT::Ray& ray, CRT::HitInformation& hitInfo) {
@@ -25,11 +27,11 @@ bool CRT::RayTracer::HasRayIntersection(CRT::Ray& ray, CRT::HitInformation& hitI
 			hitInfo = temp;
 		}
 	}
-	 
+
 	return hasHitAnything;
 }
 
-CRT::Vector3 reflect(const CRT::Vector3& I, const CRT::Vector3& N)
+CRT::Vector3 ReflectRayDirection(const CRT::Vector3& I, const CRT::Vector3& N)
 {
 	return I - 2 * Dot(I, N) * N;
 }
@@ -68,9 +70,8 @@ CRT::Color CRT::RayTracer::CalculateColor(CRT::Ray& ray, int depth) {
 			}
 		}
 		else {
-			CRT::Vector3 reflectedDirection = reflect(ray.GetDirection(), hitInfo.normal);
+			CRT::Vector3 reflectedDirection = ReflectRayDirection(ray.GetDirection(), hitInfo.normal);
 			CRT::Ray reflectedRay = CRT::Ray(hitInfo.point, reflectedDirection.Normalize());
-			//finalColor += CalculateColor(reflectedRay, depth - 1) + *hitInfo.mat.get()->GetColor();
 			finalColor += CalculateColor(reflectedRay, depth - 1) + hitInfo.mat.GetColor();
 		}
 
@@ -86,16 +87,18 @@ void CRT::RayTracer::Render() {
 
 	int width = settings.get()->GetWidth();
 	int height = settings.get()->GetHeight();
+	int samplesPerPixel = 10;
+	int maxDepth = 10;
 	double aspectRatio = (double)width / height;
 
 	// Angle of the camera's fov
 	auto fov = 90.0;
 	auto halfA = tan(fov / 2 * PI / 180);
-	//auto moveDir = CRT::Vector3(-0.5, -1, 0.5);
 	auto moveDir = CRT::Vector3(-0.2, 0, 0);
 	double spinAmount = 5; //5 degrees spin
 
 	auto start = std::chrono::high_resolution_clock::now();
+	CRT::Scene scene = *m_Scene.get();
 
 	for (int i = 0; i < 1; i++) {
 
@@ -108,23 +111,27 @@ void CRT::RayTracer::Render() {
 		myfile << width << " " << height << "\n";
 		myfile << "255 \n";
 
-
-		CRT::Scene scene = *m_Scene.get();
-
-		scene.GetCamera().get()->Pan(spinAmount);
-		scene.GetCamera().get()->Move(moveDir);
-
 		for (int i = 0; i < height; i++) {
 			for (int j = 0; j < width; j++) {
-				auto pixelX = (2 * (j + 0.5) / (double)width - 1) * aspectRatio * halfA;
-				auto pixelY = (1 - 2 * (i + 0.5) / (double)height) * halfA;
-				CRT::Ray ray = scene.GetCamera().get()->GenerateRay(pixelX, pixelY);
-				WriteColor(myfile, CalculateColor(ray, 20));
+				CRT::Color color;
+				for (int s = 0; s < samplesPerPixel; s++) {
+					auto pixelX = (2 * (j + RandomDouble(0,1) + 0.5) / (double)width - 1) * aspectRatio * halfA;
+					auto pixelY = (1 - 2 * (i + RandomDouble(0,1) + 0.5) / (double)height) * halfA;
+					CRT::Ray ray = scene.GetCamera().get()->GenerateRay(pixelX, pixelY);
+					color += CalculateColor(ray, maxDepth);
+				}
+
+				WriteColor(myfile, color, samplesPerPixel);
 			}
 
 			std::cout << "Scanlines remaining..." << height - i << std::endl;
 		}
+
+		// Rotation by first panning the camera around the Y axis and then moving it in a constant direction
+		/*scene.GetCamera().get()->Pan(spinAmount);
+		scene.GetCamera().get()->Move(moveDir);*/
 	}
+
 	auto stop = std::chrono::high_resolution_clock::now();
 	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
 	std::cout << "Done. It took " << duration.count() * 1 / 1000 << " milliseconds" << std::endl;

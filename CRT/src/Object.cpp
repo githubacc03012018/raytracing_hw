@@ -30,7 +30,3 @@ std::vector<CRT::Triangle> CRT::Object::GetMesh() {
 CRT::Material CRT::Object::GetMaterial() {
 	return m_Material;
 }
-
-/*std::shared_ptr<CRT::Material> CRT::Object::GetMaterial() {
-	return m_Material;
-}*/

@@ -13,23 +13,10 @@ namespace CRT {
 		return m_VVertices[2];
 	}
 
-	/*Point3 CRT::Triangle::v0() {
-		return m_Vertices[0];
-	}
-
-	Point3 CRT::Triangle::v1() {
-		return m_Vertices[1];
-	}
-
-	Point3 CRT::Triangle::v2() {
-		return m_Vertices[2];
-	}*/
-
 	Vector3 CRT::Triangle::GetNormal() {
 		return m_Normal;
 	}
 	 
-	//vertex area
 	double CRT::Triangle::Area() {
 		auto edge0 = vv1().GetPosition() - vv0().GetPosition();
 		auto edge1 = vv2().GetPosition() - vv1().GetPosition();
@@ -89,6 +76,7 @@ namespace CRT {
 		}
 
 		if (smoothShading == true) {
+			// Calculate the barycentric coordinates
 			auto v0p = P - vv0();
 			auto v0v1 = vv0().GetPosition() - vv1().GetPosition();
 			auto v0v2 = vv0().GetPosition() - vv2().GetPosition();
@@ -103,9 +91,5 @@ namespace CRT {
 
 	Point3 CRT::Triangle::GetPointOfIntersection() {
 		return m_IntersectionPoint;
-	}
-  
-	double CRT::Triangle::GetT() {
-		return t;
 	}
 }

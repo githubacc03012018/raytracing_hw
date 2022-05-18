@@ -13,13 +13,11 @@ namespace CRT {
 		Point3 GetPointOfIntersection();
 		Vector3 GetNormal();
 		double Area();
-		double GetT();
 		bool HasRayIntersection(CRT::Ray& r, bool smoothShading, double tMin, double closestT, double& t);
-		 
-		CRT::Vertex m_VVertices[3];
 	private: 
 		double t;
 		CRT::Point3 m_IntersectionPoint;
+		CRT::Vertex m_VVertices[3];
 		CRT::Vector3 m_Normal;
 	};
 }
