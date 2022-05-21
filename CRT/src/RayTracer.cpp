@@ -98,11 +98,12 @@ void CRT::RayTracer::Render() {
 	auto halfA = tan(fov / 2 * PI / 180);
 	auto moveDir = CRT::Vector3(-0.2, 0, 0);
 	double spinAmount = 5; //5 degrees spin
+	int frames = 1;
 
 	auto start = std::chrono::high_resolution_clock::now();
 	CRT::Scene scene = *m_Scene.get();
 
-	for (int i = 0; i < 1; i++) {
+	for (int i = 0; i < frames; i++) {
 
 		std::cout << "Working.." << std::endl;
 		std::fstream myfile;
