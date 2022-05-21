@@ -37,14 +37,16 @@ CRT::Vector3 ReflectRayDirection(const CRT::Vector3& I, const CRT::Vector3& N)
 }
 
 CRT::Color CRT::RayTracer::CalculateColor(CRT::Ray& ray, int depth) {
+	if (depth <= 0) {
+		return Color(0, 0, 0);
+	}
+
 	CRT::Color finalColor;
 	CRT::HitInformation hitInfo;
 
 	auto lights = m_Scene.get()->GetLights();
 
-	if (depth <= 0) {
-		return Color(0, 0, 0);
-	}
+	
 
 	if (HasRayIntersection(ray, hitInfo)) {
 		auto matType = hitInfo.mat.GetMaterialType();
