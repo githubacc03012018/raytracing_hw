@@ -1,4 +1,8 @@
 # raytracing_hw
 Chaos ray-tracing course assignments.
 
-Image rendered with final version: ![alt image](https://i.ibb.co/XLHcL9G/image-0.png)
+Images: 
+
+![alt image](https://ibb.co/xsXXMQh)
+![alt image](https://ibb.co/Tcck8ry)
+![alt image](https://ibb.co/QDL7Ms9)
