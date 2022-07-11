@@ -177,7 +177,7 @@ std::vector<CRT::Object> CRT::Scene::LoadObject(const rapidjson::Document& docum
 			auto ic = f[2];
 			const CRT::Vector3 e1 = vertexArray[ib].GetPosition() - vertexArray[ia].GetPosition();
 			const CRT::Vector3 e2 = vertexArray[ic].GetPosition() - vertexArray[ib].GetPosition();
-			const CRT::Vector3 no = cross(e1, e2);
+			const CRT::Vector3 no = cross(e1, e2).Length() / 2;
 
 			vertexArray[ia].m_Normal += no;
 			vertexArray[ib].m_Normal += no;
