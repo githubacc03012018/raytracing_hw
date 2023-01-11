@@ -5,6 +5,6 @@ Chaos ray-tracing course assignments.
 https://www.youtube.com/watch?v=qjH8tyCTzKY
 * Images: 
 
-![Sphere](https://www.linkpicture.com/q/image_171.png)
-![Sphere](https://www.linkpicture.com/q/image2_2.png)
-![Dragon](https://www.linkpicture.com/q/image_0.png)
+![Sphere 1](https://github.com/githubacc03012018/images/blob/main/image.png)
+![Sphere 2](https://github.com/githubacc03012018/images/blob/main/imag2.png)
+![Dragon](https://github.com/githubacc03012018/images/blob/main/image_0.png)
